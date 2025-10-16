@@ -2,14 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MenuController } from '@ionic/angular';
 import {
-  IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader,
-  IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet,
+  IonApp,
+  IonSplitPane,
+  IonMenu,
+  IonContent,
+  IonList,
+  IonListHeader,
+  IonNote,
+  IonMenuToggle,
+  IonItem,
+  IonIcon,
+  IonLabel,
+  IonRouterOutlet,
   IonButton
 } from '@ionic/angular/standalone';
 
-// ✅ Firebase test importi
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, set } from 'firebase/database';
+import { getDatabase } from 'firebase/database';
 import { environment } from '../environments/environment';
 
 @Component({
@@ -18,9 +27,20 @@ import { environment } from '../environments/environment';
   styleUrls: ['app.component.scss'],
   standalone: true,
   imports: [
-    IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader,
-    IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet,
-    IonButton, RouterLink
+    IonApp,
+    IonSplitPane,
+    IonMenu,
+    IonContent,
+    IonList,
+    IonListHeader,
+    IonNote,
+    IonMenuToggle,
+    IonItem,
+    IonIcon,
+    IonLabel,
+    IonRouterOutlet,
+    IonButton,
+    RouterLink
   ]
 })
 export class AppComponent implements OnInit {
@@ -29,16 +49,21 @@ export class AppComponent implements OnInit {
     { title: 'Admin', url: '/admin-home', icon: 'person' }
   ];
 
-  constructor(private router: Router, private menuCtrl: MenuController) {}
+  constructor(
+    private router: Router,
+    private menuCtrl: MenuController
+  ) {}
 
-  
-  ngOnInit() {
+  ngOnInit(): void {
     
+    const app = initializeApp(environment.firebase);
+    getDatabase(app);
   }
 
-  logout() {
+  logout(): void {
     this.menuCtrl.close().then(() => {
       this.router.navigate(['/login'], { replaceUrl: true });
     });
   }
 }
+
