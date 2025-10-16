@@ -1,4 +1,4 @@
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding">
   <div class="flex-center">
 
     <ion-card>
@@ -9,29 +9,26 @@
       </ion-card-header>
 
       <ion-card-content>
-       
+
         <ion-item>
           <ion-label position="floating">E-mail</ion-label>
-          <ion-input type="email" [(ngModel)]="email" ></ion-input>
+          <ion-input type="email" [(ngModel)]="email" required></ion-input>
         </ion-item>
 
-       
         <ion-item>
           <ion-label position="floating">Password</ion-label>
-          <ion-input type="password" [(ngModel)]="password" ></ion-input>
+          <ion-input type="password" [(ngModel)]="password" required></ion-input>
         </ion-item>
 
-        
         <ion-button size="full" fill="clear" shape="round" color="warning" routerLink="/forgot-password">
-          Forgot email/password
+          Forgot password
         </ion-button>
 
-        
-        <ion-button size="full" fill="solid" shape="round" color="warning" (click)="login()">
+        <ion-button expand="block" fill="solid" shape="round" color="warning" (click)="login()">
           LOGIN
         </ion-button>
 
-        <ion-button size="full" fill="outline" shape="round" color="warning" routerLink="/register">
+        <ion-button expand="block" fill="outline" shape="round" color="warning" routerLink="/register">
           Register
         </ion-button>
       </ion-card-content>

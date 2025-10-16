@@ -17,9 +17,11 @@ import { getDatabase, ref, onValue } from 'firebase/database';
   ]
 })
 export class HomePage implements OnInit {
+
   selectedDate: Date = new Date();
   sessions: any[] = [];
-  reservedTitleForSelectedDay: string | null = null; // 👈 naziv rezervisanog treninga za izabrani dan
+  reservedTitleForSelectedDay: string | null = null; 
+  userEmail: string = ''; 
 
   days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date();
@@ -39,6 +41,9 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit() {
+ 
+    this.userEmail = localStorage.getItem('userEmail') || '';
+
     const today = this.days.find(d => d.selected);
     if (today) {
       this.loadSessions(today.date);
@@ -50,9 +55,11 @@ export class HomePage implements OnInit {
     this.days.forEach(day => (day.selected = false));
     selectedDay.selected = true;
     this.selectedDate = new Date(selectedDay.date);
+
     this.loadSessions(selectedDay.date);
-    this.loadReservedForDate(selectedDay.date); // 👈 Učitaj rezervaciju za taj dan
+    this.loadReservedForDate(selectedDay.date); 
   }
+
 
   loadSessions(date: string) {
     const db = getDatabase();
@@ -62,6 +69,8 @@ export class HomePage implements OnInit {
       if (data) {
         const allSessions = Object.values(data);
         const now = new Date();
+
+       
         this.sessions = allSessions.filter((session: any) => {
           const sessionStart = new Date(`${date}T${session.startTime}`);
           return sessionStart.getTime() > now.getTime();
@@ -71,6 +80,7 @@ export class HomePage implements OnInit {
       }
     });
   }
+
 
   async onReserve(session: any) {
     const reservations = this.getUserReservations();
@@ -91,7 +101,7 @@ export class HomePage implements OnInit {
       reservations[dateKey].push(sessionKey);
       this.saveUserReservations(reservations);
 
-      // 👇 Čuvamo koji trening je rezervisan za taj dan
+    
       this.reservedTitleForSelectedDay = session.title;
       this.saveReservedForDate(dateKey, session.title);
 
@@ -120,7 +130,7 @@ export class HomePage implements OnInit {
       reservations[dateKey] = reservations[dateKey].filter((r: string) => r !== sessionKey);
       this.saveUserReservations(reservations);
 
-      // 👇 Ako je ovo bio prikazani trening, obriši ga iz prikaza
+     
       this.reservedTitleForSelectedDay = null;
       localStorage.removeItem(`reservedTitle-${dateKey}`);
 
@@ -139,10 +149,12 @@ export class HomePage implements OnInit {
     localStorage.setItem('userReservationsByDay', JSON.stringify(reservations));
   }
 
+ 
   saveReservedForDate(date: string, title: string) {
     localStorage.setItem(`reservedTitle-${date}`, title);
   }
 
+  
   loadReservedForDate(date: string) {
     this.reservedTitleForSelectedDay = localStorage.getItem(`reservedTitle-${date}`);
   }

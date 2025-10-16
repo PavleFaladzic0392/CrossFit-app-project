@@ -5,10 +5,11 @@
 </ion-header>
 
 <ion-content>
-   <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+  <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
     <ion-card-content class="ion-padding">
+
       <ion-item>
-        <ion-label position="floating" label placeholder="First Name">First Name</ion-label>
+        <ion-label position="floating">First Name</ion-label>
         <ion-input formControlName="firstName" required></ion-input>
       </ion-item>
 
@@ -31,9 +32,27 @@
         <ion-label position="floating">Confirm Password</ion-label>
         <ion-input formControlName="confirmPassword" type="password" required></ion-input>
       </ion-item>
+
+    
+      <div class="ion-padding-start" *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched">
+        <ion-text color="danger">
+          Lozinka i potvrda lozinke se ne poklapaju.
+        </ion-text>
+      </div>
+
+      
+      <ion-item lines="none">
+        <ion-checkbox slot="start" formControlName="acceptTerms"></ion-checkbox>
+        <ion-label>
+          Prihvatam <a routerLink="/terms">uslove korišćenja</a>
+        </ion-label>
+      </ion-item>
+
     </ion-card-content>
 
-    <ion-button expand="block" type="submit" routerLink="/login">Register Now</ion-button>
+    <ion-button expand="block" type="submit">
+      Register Now
+    </ion-button>
 
     <div class="ion-text-center">
       <p>Already have an account? <a routerLink="/login">Sign in</a></p>

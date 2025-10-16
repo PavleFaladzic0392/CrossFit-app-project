@@ -9,7 +9,7 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
 
-  <!-- Profil korisnika -->
+  
   <ion-list color="warning">
     <ion-item color="warning">
       <ion-avatar slot="start">
@@ -19,14 +19,14 @@
         />
       </ion-avatar>
       <ion-label>
-        <h1>Pavle Faladzic</h1>
+         <h1>{{ userEmail }}</h1> 
         <p *ngIf="reservedTitleForSelectedDay">Rezervisano: {{ reservedTitleForSelectedDay }}</p>
       <p *ngIf="!reservedTitleForSelectedDay">Nema rezervacija za ovaj dan</p>
       </ion-label>
     </ion-item>
   </ion-list>
 
-  <!-- Horizontalni prikaz dana -->
+
   <div class="horizontal-scroll">
     <div
       class="day-item"
@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  <!-- Lista treninga -->
+
   <ion-list>
     <ion-card *ngFor="let session of sessions">
       <ion-card-header>
