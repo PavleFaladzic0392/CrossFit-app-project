@@ -51,7 +51,7 @@ export class HomePage implements OnInit {
     this.loadSessions(selectedDay.date);
   }
 
-  // Učitavanje treninga iz Firebase sa filterom za prošle treninge
+  
   loadSessions(date: string) {
     const db = getDatabase();
     const sessionsRef = ref(db, `treninzi/${date}`);
@@ -60,7 +60,7 @@ export class HomePage implements OnInit {
       if (data) {
         const allSessions = Object.values(data);
 
-        // Filtriramo treninge čije je vreme početka prošlo
+        
         const now = new Date();
         this.sessions = allSessions.filter((session: any) => {
           const sessionStart = new Date(`${date}T${session.startTime}`);

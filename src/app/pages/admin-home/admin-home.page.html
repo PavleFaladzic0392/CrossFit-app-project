@@ -9,7 +9,7 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
 
-  <!-- Horizontalni prikaz dana -->
+  
   <div class="horizontal-scroll">
     <div
       class="day-item"
@@ -22,12 +22,12 @@
     </div>
   </div>
 
-  <!-- Dugme za dodavanje novog treninga -->
+  
   <ion-button expand="full" color="primary" (click)="showNewSessionForm = !showNewSessionForm">
     {{ showNewSessionForm ? 'Otkaži' : 'Dodaj novi trening' }}
   </ion-button>
 
-  <!-- Forma za novi trening -->
+ 
   <div *ngIf="showNewSessionForm" class="ion-padding new-session-form">
     <ion-card>
       <ion-card-header>
@@ -59,7 +59,7 @@
     </ion-card>
   </div>
 
-  <!-- Lista postojećih termina za selektovani dan -->
+ 
   <ion-list>
     <ion-card *ngFor="let session of getSessionsForSelectedDay()">
       <ion-card-header>
@@ -84,7 +84,7 @@
           <ion-input type="number" [(ngModel)]="session.capacity" [readonly]="!session.editing"></ion-input>
         </ion-item>
 
-        <!-- Dugmad za edit i save -->
+       
         <div class="ion-padding" *ngIf="!session.editing">
           <ion-button size="small" color="secondary" (click)="editSession(session)">Izmeni</ion-button>
         </div>
@@ -95,7 +95,7 @@
     </ion-card>
   </ion-list>
 
-  <!-- Dugme za slanje svih treninga u Firebase -->
+  
   <ion-button expand="full" color="tertiary" (click)="sendAllToFirebase()">
     Sacuvaj sve treninge!
   </ion-button>

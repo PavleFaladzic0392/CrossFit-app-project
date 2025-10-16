@@ -31,23 +31,9 @@ export class AppComponent implements OnInit {
 
   constructor(private router: Router, private menuCtrl: MenuController) {}
 
-  // 🔥 Dodaj test Firebase konekcije
+  
   ngOnInit() {
-    try {
-      // Inicijalizacija Firebase aplikacije
-      const app = initializeApp(environment.firebase);
-      const db = getDatabase(app);
-
-      // Testni zapis u bazu
-      set(ref(db, 'connectionTest/'), {
-        message: 'Firebase connected successfully ✅',
-        timestamp: new Date().toISOString()
-      });
-
-      console.log('✅ Firebase test data sent successfully!');
-    } catch (err) {
-      console.error('❌ Firebase connection failed:', err);
-    }
+    
   }
 
   logout() {

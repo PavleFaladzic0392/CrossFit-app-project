@@ -13,7 +13,7 @@ import { getDatabase, ref, set, onValue } from 'firebase/database';
   imports: [CommonModule, FormsModule, IonicModule]
 })
 export class AdminHomePage {
-  // Dani u horizontalnom prikazu
+  
   days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date();
     date.setDate(date.getDate() + i);
@@ -25,16 +25,16 @@ export class AdminHomePage {
     };
   });
 
-  // Trenutno selektovan dan
+ 
   get selectedDay() {
     return this.days.find(d => d.selected);
   }
 
-  // Forma za dodavanje novog treninga
+  
   showNewSessionForm = false;
   newSession: any = { title: '', startTime: '', endTime: '', capacity: 0 };
 
-  // Svi treninzi grupisani po danima
+  
   sessionsByDay: { [date: string]: any[] } = {};
 
   constructor(
@@ -42,16 +42,16 @@ export class AdminHomePage {
     private menu: MenuController,
     private router: Router
   ) {
-    this.loadAllFromFirebase(); // učitavanje svih treninga pri startu
+    this.loadAllFromFirebase(); 
   }
 
-  // Selektovanje dana
+ 
   selectDay(day: any) {
     this.days.forEach(d => d.selected = false);
     day.selected = true;
   }
 
-  // Dodavanje novog treninga za selektovani dan
+  
   addNewSession() {
     if (!this.newSession.title || !this.newSession.startTime || !this.newSession.endTime || this.newSession.capacity <= 0) {
       this.presentAlert('Popunite sve podatke ispravno!');
@@ -69,33 +69,33 @@ export class AdminHomePage {
 
     this.presentAlert('Trening dodat lokalno ✅');
 
-    // Reset forme
+   
     this.newSession = { title: '', startTime: '', endTime: '', capacity: 0 };
     this.showNewSessionForm = false;
   }
 
-  // Dobijanje treninga za selektovani dan
+ 
   getSessionsForSelectedDay() {
     const date = this.selectedDay?.date;
     return date && this.sessionsByDay[date] ? this.sessionsByDay[date] : [];
   }
 
-  // Omogućava izmenu treninga
+ 
   editSession(session: any) {
     session.editing = true;
   }
 
-  // Čuvanje izmenjenog treninga
+ 
   saveSession(session: any) {
     session.editing = false;
     this.presentAlert('Trening je uspešno izmenjen ✅');
   }
 
-  // Slanje svih treninga u Firebase
+ 
   async sendAllToFirebase() {
     const db = getDatabase();
     try {
-      // merge: učitava postojeće podatke, kombinuje sa lokalnim i šalje nazad
+     
       const refDb = ref(db, 'treninzi/');
       onValue(refDb, snapshot => {
         const existingData = snapshot.val() || {};
@@ -109,7 +109,7 @@ export class AdminHomePage {
     }
   }
 
-  // Učitavanje svih treninga iz Firebase
+  
   loadAllFromFirebase() {
     const db = getDatabase();
     const refDb = ref(db, 'treninzi/');
@@ -121,7 +121,7 @@ export class AdminHomePage {
     });
   }
 
-  // Lokalni alert
+ 
   async presentAlert(message: string) {
     const alert = await this.alertController.create({
       header: 'Obaveštenje',
@@ -131,7 +131,7 @@ export class AdminHomePage {
     await alert.present();
   }
 
-  // Logout
+  
   async logout() {
     await this.menu.close('mainMenu');
     this.router.navigateByUrl('/login', { replaceUrl: true });
