@@ -1,0 +1,42 @@
+<ion-content [fullscreen]="true">
+  <div class="flex-center">
+
+    <ion-card>
+      <ion-card-header>
+        <div class="flex-center">
+          <ion-card-title color="warning">CrossFit</ion-card-title>
+        </div>    
+      </ion-card-header>
+
+      <ion-card-content>
+        <!-- Email input -->
+        <ion-item>
+          <ion-label position="floating">E-mail</ion-label>
+          <ion-input type="email" [(ngModel)]="email" ></ion-input>
+        </ion-item>
+
+        <!-- Password input -->
+        <ion-item>
+          <ion-label position="floating">Password</ion-label>
+          <ion-input type="password" [(ngModel)]="password" ></ion-input>
+        </ion-item>
+
+        <!-- Forgot password button -->
+        <ion-button size="full" fill="clear" shape="round" color="warning" routerLink="/forgot-password">
+          Forgot email/password
+        </ion-button>
+
+        <!-- Login button -->
+        <ion-button size="full" fill="solid" shape="round" color="warning" (click)="login()">
+          LOGIN
+        </ion-button>
+
+        <!-- Register button -->
+        <ion-button size="full" fill="outline" shape="round" color="warning" routerLink="/register">
+          Register
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>

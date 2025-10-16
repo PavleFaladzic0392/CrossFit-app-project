@@ -1,0 +1,104 @@
+ion-list{
+    padding: 0%;
+    box-shadow: 0 1px 2px 1px rgb(0 0 0/ 20%);
+}
+.horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  padding: 8px 0;
+  gap: 12px;
+}
+
+.day-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  height: 70px;
+  border-radius: 12px;
+  background-color: #f1f1f1;
+  text-align: center;
+  padding: 6px;
+  transition: 0.2s ease-in-out;
+}
+
+.day-item .day-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.day-item .day-date {
+  font-size: 14px;
+  color: #666;
+}
+
+.day-item.selected {
+  background-color: #3880ff;
+}
+
+.day-item.selected .day-label,
+.day-item.selected .day-date {
+  color: #ffffff;
+}
+
+.day-selector {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 16px 0;
+  padding-bottom: 8px;
+}
+
+.day-card {
+  min-width: 60px;
+  background: #f8f8f8;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.day-card .day-number {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.day-card .day-label {
+  font-size: 12px;
+  color: #777;
+  margin-top: 2px;
+}
+
+.day-card.selected {
+  background: #ffffff;
+  border-color: #333;
+}
+
+.sessions {
+  margin-top: 16px;
+}
+
+.session-card {
+  margin-bottom: 12px;
+}
+
+.session-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.session-time, .session-capacity {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+ion-button {
+  margin-left: auto;
+}

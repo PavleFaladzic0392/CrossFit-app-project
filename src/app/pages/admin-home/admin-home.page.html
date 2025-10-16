@@ -1,0 +1,103 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Admin</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <!-- Horizontalni prikaz dana -->
+  <div class="horizontal-scroll">
+    <div
+      class="day-item"
+      *ngFor="let day of days"
+      [class.selected]="day.selected"
+      (click)="selectDay(day)"
+    >
+      <div class="day-label">{{ day.label }}</div>
+      <div class="day-date">{{ day.displayDate }}</div>
+    </div>
+  </div>
+
+  <!-- Dugme za dodavanje novog treninga -->
+  <ion-button expand="full" color="primary" (click)="showNewSessionForm = !showNewSessionForm">
+    {{ showNewSessionForm ? 'Otkaži' : 'Dodaj novi trening' }}
+  </ion-button>
+
+  <!-- Forma za novi trening -->
+  <div *ngIf="showNewSessionForm" class="ion-padding new-session-form">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Novi trening</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Naziv treninga</ion-label>
+          <ion-input [(ngModel)]="newSession.title" placeholder="Unesite naziv"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Vreme od</ion-label>
+          <ion-input type="time" [(ngModel)]="newSession.startTime"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Vreme do</ion-label>
+          <ion-input type="time" [(ngModel)]="newSession.endTime"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Kapacitet</ion-label>
+          <ion-input type="number" [(ngModel)]="newSession.capacity"></ion-input>
+        </ion-item>
+
+        <ion-button expand="full" color="primary" (click)="addNewSession()">Sačuvaj trening</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Lista postojećih termina za selektovani dan -->
+  <ion-list>
+    <ion-card *ngFor="let session of getSessionsForSelectedDay()">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-item>
+            <ion-label position="stacked">Naziv treninga</ion-label>
+            <ion-input [(ngModel)]="session.title" [readonly]="!session.editing"></ion-input>
+          </ion-item>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Vreme od</ion-label>
+          <ion-input type="time" [(ngModel)]="session.startTime" [readonly]="!session.editing"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Vreme do</ion-label>
+          <ion-input type="time" [(ngModel)]="session.endTime" [readonly]="!session.editing"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Kapacitet</ion-label>
+          <ion-input type="number" [(ngModel)]="session.capacity" [readonly]="!session.editing"></ion-input>
+        </ion-item>
+
+        <!-- Dugmad za edit i save -->
+        <div class="ion-padding" *ngIf="!session.editing">
+          <ion-button size="small" color="secondary" (click)="editSession(session)">Izmeni</ion-button>
+        </div>
+        <div class="ion-padding" *ngIf="session.editing">
+          <ion-button size="small" color="success" (click)="saveSession(session)">Sačuvaj izmenu</ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <!-- Dugme za slanje svih treninga u Firebase -->
+  <ion-button expand="full" color="tertiary" (click)="sendAllToFirebase()">
+    Sacuvaj sve treninge!
+  </ion-button>
+
+</ion-content>

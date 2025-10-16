@@ -1,0 +1,67 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>CrossFit</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <!-- Profil korisnika -->
+  <ion-list color="warning">
+    <ion-item color="warning">
+      <ion-avatar slot="start">
+        <img src="https://i.fbcd.co/products/original/d4c961732ba6ec52c0bbde63c9cb9e5dd6593826ee788080599f68920224e27d.jpg" alt="Avatar" />
+      </ion-avatar>
+      <ion-label>
+        <h1>Pavle Faladzic</h1>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Horizontalni prikaz dana -->
+  <div class="horizontal-scroll">
+    <div
+      class="day-item"
+      *ngFor="let day of days"
+      [class.selected]="day.selected"
+      (click)="selectDay(day)"
+    >
+      <div class="day-label">{{ day.label }}</div>
+      <div class="day-date">{{ day.displayDate }}</div>
+    </div>
+  </div>
+
+  <!-- Lista treninga -->
+  <ion-list>
+    <ion-card *ngFor="let session of sessions">
+      <ion-card-header>
+        <ion-card-title>{{ session.title }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="session-info">
+
+        <ion-item lines="none">
+          <ion-icon name="time-outline" slot="start"></ion-icon>
+          <!-- Prilagođeno TS poljima -->
+          <ion-label>{{ session.startTime }} - {{ session.endTime }}</ion-label>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-icon name="people-outline" slot="start"></ion-icon>
+          <ion-label>{{ session.taken || 0 }} / {{ session.capacity }}</ion-label>
+        </ion-item>
+
+        <ion-button expand="block" fill="outline" color="success" (click)="onReserve(session)">
+          Rezerviši
+        </ion-button>
+        <ion-button expand="block" fill="outline" color="danger" (click)="onCancel(session)">
+          Otkaži
+        </ion-button>
+
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+</ion-content>

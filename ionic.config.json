@@ -1,0 +1,7 @@
+{
+  "name": "CrossFit-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
