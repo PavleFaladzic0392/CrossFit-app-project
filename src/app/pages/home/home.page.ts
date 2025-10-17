@@ -20,8 +20,8 @@ export class HomePage implements OnInit {
 
   selectedDate: Date = new Date();
   sessions: any[] = [];
-  reservedTitleForSelectedDay: string | null = null; 
-  userEmail: string = ''; 
+  reservedTitleForSelectedDay: string | null = null;
+  userEmail: string = '';
 
   days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date();
@@ -45,7 +45,6 @@ export class HomePage implements OnInit {
     this.userEmail = localStorage.getItem('userEmail') || '';
     const today = this.days.find(d => d.selected);
     if (today) {
-      this.selectedDate = new Date(today.date);
       this.loadSessions(today.date);
       this.loadReservedForDate(today.date);
     }
@@ -57,25 +56,38 @@ export class HomePage implements OnInit {
     this.selectedDate = new Date(selectedDay.date);
 
     this.loadSessions(selectedDay.date);
-    this.loadReservedForDate(selectedDay.date); 
+    this.loadReservedForDate(selectedDay.date);
   }
 
   loadSessions(date: string) {
-    this.firebaseService.getData(`treninzi/${date}`).subscribe(data => {
-      if (data) {
-        const allSessions = Object.values(data);
-        const now = new Date();
-        this.sessions = allSessions.map((session: any) => {
-          const sessionStart = new Date(`${date}T${session.startTime}`);
-          
-          const reserved = localStorage.getItem(`reserved-${date}`) === session.title;
-          return { ...session, isReserved: reserved, sessionStart };
-        }).filter((session: any) => session.sessionStart.getTime() > now.getTime());
-      } else {
-        this.sessions = [];
-      }
-    });
-  }
+  this.firebaseService.getData(`treninzi/${date}`).subscribe(sessionsData => {
+    if (!sessionsData) {
+      this.sessions = [];
+      return;
+    }
+
+    const allSessions = Object.values(sessionsData);
+
+    this.firebaseService.getData(`rezervacije/${date}`).subscribe(reservationsData => {
+      const reservations = reservationsData ? Object.values(reservationsData) : [];
+
+      const now = new Date();
+      this.sessions = allSessions.map((session: any) => {
+        const sessionKey = `${session.title}-${session.startTime}-${session.endTime}`;
+        const sessionStart = new Date(`${date}T${session.startTime}`);
+
+        if (sessionStart.getTime() <= now.getTime()) return null;
+
+        session.isReserved = reservations.some((r: any) => r.session === sessionKey && r.email === this.userEmail);
+
+        if (!session.taken) session.taken = 0;
+
+        return session;
+      }).filter(s => s !== null);
+    });
+  });
+}
+
 
   async onReserve(session: any) {
     const dateKey = this.selectedDate.toISOString().split('T')[0];
@@ -85,18 +97,29 @@ export class HomePage implements OnInit {
 
     if (session.taken < session.capacity) {
       session.taken++;
+
       this.firebaseService.putData(`treninzi/${dateKey}/${sessionKey}`, session).subscribe({
         next: async () => {
-          
           session.isReserved = true;
-          localStorage.setItem(`reserved-${dateKey}`, session.title);
-          this.reservedTitleForSelectedDay = session.title;
 
-          await this.presentAlert(`Uspešno ste rezervisali termin: ${session.title}`);
+          this.firebaseService.postData(`rezervacije/${dateKey}`, {
+            session: sessionKey,
+            email: this.userEmail
+          }).subscribe({
+            next: async () => {
+              this.reservedTitleForSelectedDay = session.title;
+              await this.presentAlert(`Uspešno ste rezervisali termin: ${session.title}`);
+            },
+            error: async () => {
+              session.taken--;
+              session.isReserved = false;
+              await this.presentAlert('Greška prilikom rezervacije. Pokušajte ponovo.');
+            }
+          });
         },
         error: async () => {
           session.taken--;
-          await this.presentAlert('Greška prilikom rezervacije. Pokušajte ponovo.');
+          await this.presentAlert('Greška prilikom rezervacije treninga.');
         }
       });
     } else {
@@ -114,29 +137,33 @@ export class HomePage implements OnInit {
     }
 
     session.taken--;
+    session.isReserved = false;
+
     this.firebaseService.putData(`treninzi/${dateKey}/${sessionKey}`, session).subscribe({
       next: async () => {
-        session.isReserved = false;
-        localStorage.removeItem(`reserved-${dateKey}`);
-        this.reservedTitleForSelectedDay = null;
 
-        await this.presentAlert(`Uspešno ste otkazali termin: ${session.title}`);
+        this.firebaseService.getData(`rezervacije/${dateKey}`).subscribe(reservations => {
+          if (reservations) {
+            const keyToDelete = Object.keys(reservations).find(k => reservations[k].session === sessionKey && reservations[k].email === this.userEmail);
+            if (keyToDelete) {
+              this.firebaseService.deleteData(`rezervacije/${dateKey}/${keyToDelete}`).subscribe();
+            }
+          }
+        });
+
+        this.reservedTitleForSelectedDay = null;
+        await this.presentAlert('Uspešno ste otkazali rezervaciju.');
       },
       error: async () => {
         session.taken++;
+        session.isReserved = true;
         await this.presentAlert('Greška prilikom otkazivanja. Pokušajte ponovo.');
       }
     });
   }
 
   loadReservedForDate(date: string) {
-    const reserved = localStorage.getItem(`reserved-${date}`);
-    this.reservedTitleForSelectedDay = reserved || null;
-    
-    this.sessions = this.sessions.map(s => ({
-      ...s,
-      isReserved: s.title === reserved
-    }));
+    this.reservedTitleForSelectedDay = localStorage.getItem(`reservedTitle-${date}`) || null;
   }
 
   async presentAlert(message: string) {
